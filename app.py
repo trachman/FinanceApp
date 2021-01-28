@@ -126,9 +126,26 @@ def format_companies(companies):
 			else:
 				print('Yahoo Finance does not have share data on this company')
 
+def write_to_db(companies):
+	FILE = 'Database/NasdaqFinancialStatements.txt'
+	with open(FILE, 'w+') as file:
+		for symbol, company in companies:
+			financials = get_financials(symbol)
+			if financials != '':
+				firstline = symbol + ' ' + company + '\n\n'
+				file.write(firstline)
+				for statement in financials:
+					file.write(statement.upper() + '\n')
+					for table in financials[statement]:
+						for section in table:
+							line = section + ' : ' + ', '.join(table[section]) + '\n'
+							file.write(line)
+			file.write('\n')
+
 def main():
 	companies = get_market_symbols()
-	format_companies(companies)
-    			
+	# format_companies(companies)
+	write_to_db(companies)
+
 if __name__ == '__main__':
 	main()
