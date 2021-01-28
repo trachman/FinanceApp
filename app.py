@@ -49,7 +49,8 @@ def get_financials(COMPANY):
 			if i % 8 == 0:
 				current_section = item.text
 				financials[statement][current_section] = []
-			if i % 8 != 0 and item.text != current_section:
+				continue
+			if item.text != current_section:
 				financials[statement][current_section].append(item.text)
 	print_financials(financials)
 	return financials
