@@ -4,3 +4,12 @@ websites to scrape information off of
 2) Market Watch
 3) Time series data from FRED
 	- Federal Reserve Economic Data
+
+
+DESIGN OF THE APP
+
+WHAT DATA DO I WANT? 
+
+HOW AM I GOING TO GET IT?
+
+DO MORE RESEARCH !!!!
