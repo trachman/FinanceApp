@@ -37,6 +37,8 @@ def get_current_price(COMPANY):
 TODO: PORT FINANCIAL DICTIONARY INTO A DATAFRAME 
 """
 
+# fucks up formatting when companies haven't been in 
+# business longer than 5 years
 def get_financials(COMPANY):
 	# just deal with annual for now
 	financials = {
@@ -66,8 +68,12 @@ def get_financials(COMPANY):
 					table_dic[current_section] = []
 					continue
 				if item.text != current_section: table_dic[current_section].append(item.text)
+			if len(table_dic) == 0:
+				print('ZERO')
 			financials[statement].append(table_dic)
-	print_financials(financials)
+		if len(financials[statement]) == 0:
+			return ''
+	# print_financials(financials)
 	return financials
 
 def print_financials(financials):
@@ -79,10 +85,30 @@ def print_financials(financials):
 				print(section, table[section])
 		print()
 
+def get_market_symbols():
+    # load into dataframe
+	filePath = 'Resources/NasdaqListed.txt'
+	with open(filePath) as file:
+		data = file.readlines()
+		companies = []
+		for entry in data:
+			splitted = entry.split('|')
+			symbol = splitted[0]
+			company = splitted[1].split('-')[0].strip()
+			companies.append((symbol,company))	
+	return companies
+
 def main():
-	tesla = 'TSLA'
-	get_financials(tesla)	
-	print(get_current_price(tesla))
+#	tesla = 'TSLA'
+#	get_financials(tesla)	
+#	print(get_current_price(tesla))
+	companies = get_market_symbols()
+	for symbol, company in companies:		
+		output = get_financials(symbol)
+		if output != '':
+			print(company)
+			print_financials(output)
+    			
 
 if __name__ == '__main__':
 	main()

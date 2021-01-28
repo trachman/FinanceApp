@@ -6,6 +6,8 @@ websites to scrape information off of
 	- Federal Reserve Economic Data
 
 
+NOTE: https://www.nyse.com/quote/ has a ton of information 
+
 DESIGN OF THE APP
 
 WHAT DATA DO I WANT? 
