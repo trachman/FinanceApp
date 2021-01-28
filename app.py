@@ -22,19 +22,30 @@ def get_current_price(COMPANY):
 	# format is [current trading price, dollar/pct change, last time updated]	
 	return [item.text for item in data]  
 
+"""
+1) INCOME STATEMENT IS ONE LARGE TABLE
 
-# not picking up liabilities in balance sheet
-# not picking up all tables in cash flows 
+2) BALANCE SHEET IS MADE UP OF 2 TABLES
+	- ASSETS
+	- LIABILITIES AND SHAREHOLDER EQUITY 
+
+3) CASH FLOWS IS MADE UP OF 3 TABLES
+	- OPERATING ACTIVITIES
+	- INVESTING ACTIVITIES
+	- FINANCING ACTIVITIES
+
+TODO: PORT FINANCIAL DICTIONARY INTO A DATAFRAME 
+"""
+
 def get_financials(COMPANY):
 	# just deal with annual for now
 	financials = {
-		'income-statement' : {},
-		'balance-sheet' : {},
-		'cash-flow' : {}
+		'income-statement' : [],
+		'balance-sheet' : [],
+		'cash-flow' : []
 	}
 	baseurl = 'https://www.marketwatch.com/investing/stock/{}/financials/'.format(COMPANY)
-	statements = ('income-statement','balance-sheet','cash-flow','secfilings')
-	statements = statements[:-1] # dont deal with secfilings just yet
+	statements = ('income-statement','balance-sheet','cash-flow')
 	for statement in statements:
 		if statement == statements[0]:	
 			response = requests.get(baseurl)
@@ -42,16 +53,20 @@ def get_financials(COMPANY):
 			url = baseurl + statement	
 			response = requests.get(url)
 		soup = BeautifulSoup(response.content, 'html.parser')
-		table = soup.find('div', {'class':'financials'})
-		cells = table.find_all('div',{'class':'cell__content'})
-		current_section = None
-		for i, item in enumerate(cells):
-			if i % 8 == 0:
-				current_section = item.text
-				financials[statement][current_section] = []
-				continue
-			if item.text != current_section:
-				financials[statement][current_section].append(item.text)
+		tables = soup.find_all('div', {'class':'financials'})
+		# iterate through each of the tables
+		for table in tables:
+			table_dic = {}
+			current_section = None
+			cells = table.find_all('div',{'class':'cell__content'})
+			for i, item in enumerate(cells):
+				if item.text == ' ' or item.text == '5-year trend': continue
+				if i % 8 == 0:
+					current_section = item.text
+					table_dic[current_section] = []
+					continue
+				if item.text != current_section: table_dic[current_section].append(item.text)
+			financials[statement].append(table_dic)
 	print_financials(financials)
 	return financials
 
@@ -59,12 +74,13 @@ def print_financials(financials):
 	for statement in financials:		  
 		print(statement.upper())
 		print()
-		for section in financials[statement]:
-			print(section, financials[statement][section])
+		for table in financials[statement]:
+			for section in table:
+				print(section, table[section])
 		print()
 
 def main():
-	tesla = 'AMZN'
+	tesla = 'MSFT'
 	get_financials(tesla)	
 	print(get_current_price(tesla))
 
