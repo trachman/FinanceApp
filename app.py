@@ -140,7 +140,7 @@ def write_to_db(companies):
 						for section in table:
 							line = section + ' : ' + ', '.join(table[section]) + '\n'
 							file.write(line)
-			file.write('\n')
+				file.write('\n')
 
 def main():
 	companies = get_market_symbols()
