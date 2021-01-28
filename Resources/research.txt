@@ -1,0 +1,6 @@
+websites to scrape information off of
+
+1) Yahoo Finance
+2) Market Watch
+3) Time series data from FRED
+	- Federal Reserve Economic Data
