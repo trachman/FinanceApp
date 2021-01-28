@@ -13,7 +13,8 @@ TODO:
 1) FINANCIAL STATEMENT DATABASE OVER LAST 5 YEARS
 2) TIME SERIES DATA OF STOCK PRICES 
 """
- 
+
+# function made with Edward
 def get_current_price(COMPANY): 
 	yfurl = 'https://ca.finance.yahoo.com/quote/{}?p={}&.tsrc=fin-srch'.format(COMPANY,COMPANY) 
 	response = requests.get(yfurl)
@@ -98,16 +99,19 @@ def get_market_symbols():
 			companies.append((symbol,company))	
 	return companies
 
+def format_companies(companies):
+	for symbol, company in companies:		
+		output = get_financials(symbol)
+		if output != '':
+			print(symbol, company)
+			print_financials(output)	
+
 def main():
 #	tesla = 'TSLA'
 #	get_financials(tesla)	
 #	print(get_current_price(tesla))
 	companies = get_market_symbols()
-	for symbol, company in companies:		
-		output = get_financials(symbol)
-		if output != '':
-			print(company)
-			print_financials(output)
+	format_companies(companies)
     			
 
 if __name__ == '__main__':
