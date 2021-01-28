@@ -80,7 +80,7 @@ def print_financials(financials):
 		print()
 
 def main():
-	tesla = 'MSFT'
+	tesla = 'TSLA'
 	get_financials(tesla)	
 	print(get_current_price(tesla))
 
