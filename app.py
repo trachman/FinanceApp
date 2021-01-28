@@ -5,7 +5,7 @@ import pandas as pd
 import re
 
 # USE SELENIUM FOR INTERACTIVE WEBSITES IF NEEDED
-# START WITH THE FORTUNE 500 COMPANIES
+# START WITH THE NASDAQ COMPANIES
 
 """
 TODO:
@@ -21,7 +21,10 @@ def get_current_price(COMPANY):
 	soup = BeautifulSoup(response.content, 'html.parser')
 	data = soup.find('div', {'class' : 'D(ib) Mend(20px)'})
 	# format is [current trading price, dollar/pct change, last time updated]	
-	return [item.text for item in data]  
+	try:
+		return [item.text for item in data]  
+	except TypeError:
+		return None
 
 """
 1) INCOME STATEMENT IS ONE LARGE TABLE
@@ -38,8 +41,7 @@ def get_current_price(COMPANY):
 TODO: PORT FINANCIAL DICTIONARY INTO A DATAFRAME 
 """
 
-# fucks up formatting when companies haven't been in 
-# business longer than 5 years
+# fixed formatting for various years in business
 def get_financials(COMPANY):
 	# just deal with annual for now
 	financials = {
@@ -49,7 +51,7 @@ def get_financials(COMPANY):
 	}
 	baseurl = 'https://www.marketwatch.com/investing/stock/{}/financials/'.format(COMPANY)
 	statements = ('income-statement','balance-sheet','cash-flow')
-	for statement in statements:
+	for i,statement in enumerate(statements):
 		if statement == statements[0]:	
 			response = requests.get(baseurl)
 		else:
@@ -58,23 +60,35 @@ def get_financials(COMPANY):
 		soup = BeautifulSoup(response.content, 'html.parser')
 		tables = soup.find_all('div', {'class':'financials'})
 		# iterate through each of the tables
-		for table in tables:
+		for j,table in enumerate(tables):
 			table_dic = {}
 			current_section = None
 			cells = table.find_all('div',{'class':'cell__content'})
+			years = table.find('thead').find_all('th')
+			# retrieve the head of the table to see how many years
+			if i == 0 and j == 0:
+				year_arr = []
+				for year in years:
+					try:
+						year_arr.append(int(year.text))
+					except ValueError:
+						continue
+				# print(len(year_arr), year_arr)
+			len_data = len(year_arr) + 3
+			# print(len_data, year_arr)
 			for i, item in enumerate(cells):
-				if item.text == ' ' or item.text == '5-year trend': continue
-				if i % 8 == 0:
+				if item.text == ' ' or item.text == '5-year trend': 
+					continue
+				if i % len_data == 0:
 					current_section = item.text
 					table_dic[current_section] = []
+					years = 1
 					continue
-				if item.text != current_section: table_dic[current_section].append(item.text)
-			if len(table_dic) == 0:
-				print('ZERO')
+				if item.text != current_section: 
+					table_dic[current_section].append(item.text)
 			financials[statement].append(table_dic)
-		if len(financials[statement]) == 0:
+		if len(financials[statement]) == 0: 
 			return ''
-	# print_financials(financials)
 	return financials
 
 def print_financials(financials):
@@ -100,19 +114,21 @@ def get_market_symbols():
 	return companies
 
 def format_companies(companies):
-	for symbol, company in companies:		
+	for symbol, company in companies:
 		output = get_financials(symbol)
 		if output != '':
 			print(symbol, company)
-			print_financials(output)	
+			print_financials(output)
+			price = get_current_price(symbol)
+			if price is not None:
+				message = '{} has a share price of ${}. For a daily change of {}. As of {}'.format(company,price[0],price[1],price[2])
+				print(message)
+			else:
+				print('Yahoo Finance does not have share data on this company')
 
 def main():
-#	tesla = 'TSLA'
-#	get_financials(tesla)	
-#	print(get_current_price(tesla))
 	companies = get_market_symbols()
 	format_companies(companies)
     			
-
 if __name__ == '__main__':
 	main()
