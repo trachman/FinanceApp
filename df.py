@@ -21,7 +21,7 @@ def to_dict(FILE):
                 else:
                     line = [ item.strip().replace("'",'') for item in line ]
                     section = line[0].replace('"','')
-                    data = line[1].split(', ')
+                    data = clean_data(line[1].split(', '))
                     companies[current_company][current_statement][section] = data
     return companies
 
@@ -47,8 +47,50 @@ def read_json(FILE):
 def company_list(JSON):
     return list(JSON.keys())
 
+"""
+HELPER FUNCTION FOR TO_DICT
+
+FOR EG;
+INPUT -> ['4.13B', '5.27B', '6.1B', '8.16B', '10.86B']
+OUTPUT -> [4,130,000,000, ETC...]
+
+INPUT -> ['(86M)', '(179M)', '233M', '(688M)', '812M']
+OUTPUT -> [-86,000,000, ETC...]
+
+INPUT -> ['-','-']
+OUTPUT -> [0,0]
+
+ESSENTIALLY WANT EVERYTHING AS INTS FOR EASY DATA MANIPULATION
+"""
+def clean_data(data):
+    expansions = {
+        'K' : 1000,
+        'M' : 1000000,
+        'B' : 1000000000
+    }
+    for i, datapoint in enumerate(data):
+        if data[i] == '-' or data[i] == '': 
+            data[i] = 0
+            continue
+        if data[i][len(data[i])-1] == '%' or data[i] == 'N/A': 
+            continue
+        if data[i][0] == '(' and data[i][len(data[i])-1] == ')':
+            data[i] = datapoint.replace('(','-').replace(')','')
+        expansion = data[i][len(data[i])-1]
+        if expansion in list(expansions.keys()):
+            data[i] = int(float(data[i][:-1]) * expansions[expansion])
+    return data
+
+
+
+
 # FILE = 'Database/NasdaqFinancialStatements.txt'
 # JSON_FILE = 'Database/NasdaqFinancialStatements.json'
+# companies = to_dict(FILE)
+# to_json(companies, JSON_FILE)
+
+
+
 # companies = to_dict(FILE)
 # to_json(companies, JSON_FILE)
 # companies = read_json(JSON_FILE)

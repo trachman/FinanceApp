@@ -176,26 +176,14 @@ def scrape_into_txt():
 	minutes = seconds * 0.0166667
 	print('Scraping took {} minutes.'.format(minutes))
 
-# TODO:
-# CHANGE '-' TO 0
-# CHANGE M TO MILLIONS, B TO BILLIONS, AND K TO THOUSANDS
-# CHANGE () TO NEGATIVE NUMBERS
-# THEN MOVE THIS TO THE DF.PY FILE
-def clean_json(JSON):
-    pass
-
 def main():
 	# scrape_into_txt()
 	JSON_FILE = 'Database/NasdaqFinancialStatements.json'
 	# update read_json so the financial statements are in dataframes
 	JSON = read_json(JSON_FILE) 
-	# companies = company_list(JSON)
-	# for i in range(10):
-	# 	c = random.choice(companies)
-	# 	print(c)
-	# 	print(JSON[c])
-	# 	print()
-	# 	print()
+	print(JSON['TSLA']) # test and it works!
+
+	# FINANCIAL DATABASE COMPLETE, WORK ON FORMAL ARCHITECTURE TMR
 
 if __name__ == '__main__':
 	main()
