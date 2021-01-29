@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import selenium
 import pandas as pd
 import re
+import time
 
 # USE SELENIUM FOR INTERACTIVE WEBSITES IF NEEDED
 # START WITH THE NASDAQ COMPANIES
@@ -143,9 +144,16 @@ def write_to_db(companies):
 				file.write('\n')
 
 def main():
+	print('Retrieving Nasdaq market data...')
 	companies = get_market_symbols()
 	# format_companies(companies)
+	start = time.time()
+	print('Scraping Financial Statements of Nasdaq companies...')
 	write_to_db(companies)
+	end = time.time()
+	seconds = end - start
+	minutes = seconds * 0.0166667
+	print('Scraping took {} minutes.'.format(minutes))
 
 if __name__ == '__main__':
 	main()
