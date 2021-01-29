@@ -26,6 +26,7 @@ def get_current_price(COMPANY):
 	data = soup.find('div', {'class' : 'D(ib) Mend(20px)'})
 	# format is [current trading price, dollar/pct change, last time updated]	
 	try:
+		data[0] = float(data[0].replace(',',''))
 		return [item.text for item in data]  
 	except TypeError:
 		return None
