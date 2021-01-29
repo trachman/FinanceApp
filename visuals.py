@@ -25,26 +25,26 @@ def negative_income_deltas():
             print(get_current_price(company))
             print()
 
-def positive_only():
-    for company in JSON_DATA:
-        try:
-            years = JSON_DATA[company]['INCOME-STATEMENT']['Item']
-            revenue = JSON_DATA[company]['INCOME-STATEMENT']['Sales/Revenue']
-        except KeyError:
-            years = JSON_DATA[company]['INCOME-STATEMENT']['Item']
-            revenue = JSON_DATA[company]['INCOME-STATEMENT']['Interest Income']
-        # percentage changes
-        negative = False
-        for i in range(len(revenue)):
-            if i > 0 and revenue[i-1] != 0:
-                difference = revenue[i] - revenue[i-1]
-                delta = round((difference/revenue[i-1]) * 100,2)
-                if delta < 0:
-                    negative = True
-                    print(company, delta, years[i])
-        if negative:
-            print(get_current_price(company))
-            print()    
+# def positive_only():
+#     for company in JSON_DATA:
+#         try:
+#             years = JSON_DATA[company]['INCOME-STATEMENT']['Item']
+#             revenue = JSON_DATA[company]['INCOME-STATEMENT']['Sales/Revenue']
+#         except KeyError:
+#             years = JSON_DATA[company]['INCOME-STATEMENT']['Item']
+#             revenue = JSON_DATA[company]['INCOME-STATEMENT']['Interest Income']
+#         # percentage changes
+#         negative = False
+#         for i in range(len(revenue)):
+#             if i > 0 and revenue[i-1] != 0:
+#                 difference = revenue[i] - revenue[i-1]
+#                 delta = round((difference/revenue[i-1]) * 100,2)
+#                 if delta < 0:
+#                     negative = True
+#                     print(company, delta, years[i])
+#         if negative:
+#             print(get_current_price(company))
+#             print()    
 
 
 def PEratio():
