@@ -4,6 +4,9 @@ import selenium
 import pandas as pd
 import re
 import time
+import random
+
+from df import read_json, print_dict, company_list
 
 # USE SELENIUM FOR INTERACTIVE WEBSITES IF NEEDED
 # START WITH THE NASDAQ COMPANIES
@@ -74,9 +77,7 @@ def get_financials(COMPANY):
 						year_arr.append(int(year.text))
 					except ValueError:
 						continue
-				# print(len(year_arr), year_arr)
 			len_data = len(year_arr) + 3
-			# print(len_data, year_arr)
 			for i, item in enumerate(cells):
 				if item.text == ' ' or item.text == '5-year trend': 
 					continue
@@ -143,7 +144,27 @@ def write_to_db(companies):
 							file.write(line)
 				file.write('\n')
 
-def main():
+# statistical success rate from full nasdaq list
+# hovers around 76% listed on the nasdaq's financial statements
+# over the last 5 years
+# makes sense since len(JSON)/len(companies) = 0.76
+def success_rate(JSON):
+	companies = get_market_symbols()
+	error_rates = []
+	for _ in range(50):
+		counter = 0
+		for _ in range(500):
+			c = random.choice(companies)[0]
+			try:
+				JSON[c]
+			except KeyError:
+				counter += 1
+		error_rates.append(round((counter/500)*100,2))
+	success_rate = 100-round(sum(error_rates)/len(error_rates),2)
+	print(str(success_rate) + '% successful')
+	return success_rate			
+
+def scrape_into_txt():
 	print('Retrieving Nasdaq market data...')
 	companies = get_market_symbols()
 	# format_companies(companies)
@@ -154,6 +175,27 @@ def main():
 	seconds = end - start
 	minutes = seconds * 0.0166667
 	print('Scraping took {} minutes.'.format(minutes))
+
+# TODO:
+# CHANGE '-' TO 0
+# CHANGE M TO MILLIONS, B TO BILLIONS, AND K TO THOUSANDS
+# CHANGE () TO NEGATIVE NUMBERS
+# THEN MOVE THIS TO THE DF.PY FILE
+def clean_json(JSON):
+    pass
+
+def main():
+	# scrape_into_txt()
+	JSON_FILE = 'Database/NasdaqFinancialStatements.json'
+	# update read_json so the financial statements are in dataframes
+	JSON = read_json(JSON_FILE) 
+	# companies = company_list(JSON)
+	# for i in range(10):
+	# 	c = random.choice(companies)
+	# 	print(c)
+	# 	print(JSON[c])
+	# 	print()
+	# 	print()
 
 if __name__ == '__main__':
 	main()
