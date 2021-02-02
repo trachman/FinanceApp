@@ -8,19 +8,15 @@ FIND SOURCE OF DATA FOR STOCK PRICES
 
 stooq.com its lit -> got 5 minute info for etfs, stocks
 
+move to ALPHA VANTAGE when the database if fully fledged
+
 STRUCTURE OF DATA
-
-DATABASE
-	MARKET
-		SECURITY TYPE
-			COMPANIES
-
 https://stooq.com/db/h/
 
 EG:
 
 DATABASE
-	TRACKED TICKER SYMBOLS | MARKET | SECURITY TYPE
+	TRACKED TICKER SYMBOLS | MARKET | SECURITY TYPE -> all in JSON
 	MARKETS
 		NASDAQ
 			FINANCIAL STATEMENTS
