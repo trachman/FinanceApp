@@ -11,10 +11,9 @@ http://ftp.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt
 
 NOTE: https://www.nyse.com/quote/ has a ton of information 
 
-DESIGN OF THE APP
 
-WHAT DATA DO I WANT? 
+MAIN SOURCE FOR NOW -> ALPHA ADVANTAGE
+-> 5 per minute
+-> 500 per day, so build over a period of time
 
-HOW AM I GOING TO GET IT?
-
-DO MORE RESEARCH !!!!
+ALPHA ADVANTAGE KEY -> 5UKYNVII43CDI9G0
