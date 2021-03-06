@@ -125,13 +125,25 @@ def nyse_tickers():
 	tickers = [ company.split('.')[0].upper() for company in companies]
 	return tickers
 
-na_tickers = nasdaq_tickers()
-ny_tickers = nyse_tickers()
+def sort_alphabetically(tickers):
+	ticker_list = [ticker.lower() for ticker in tickers]
+	ticker_list.sort()
+	return [ticker.upper() for ticker in ticker_list]
 
-print(len(na_tickers))
-print(len(ny_tickers))
+# the main function to call / import
+def all_tickers():
+	na_tickers = nasdaq_tickers()
+	ny_tickers = nyse_tickers()
+	tracked_tickers = na_tickers + ny_tickers	
+	sorted_tickers = sort_alphabetically(tracked_tickers)
+	return sorted_tickers
 
-
-# all the tickers are different which is cool
+print(all_tickers())
 # maybe check for differences between tickers and other data sites
 
+"""
+this function returns a json list of all the tickers tracked, their type,
+and the market they are traded on then updates the database
+"""
+def get_general_data():
+	pass 
